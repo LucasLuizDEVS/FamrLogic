@@ -147,3 +147,25 @@ CREATE TABLE Colheita_real(
 
     FOREIGN KEY (Id_plantio) REFERENCES Plantio(id)
 );
+
+
+
+-- ==========================
+--INSERT
+-- ==========================
+INSERT INTO Fazenda (nome, localizacao, hectares)
+VALUES
+('Fazenda Novo Horizonte', 'Uberlândia - MG', 450),
+('Fazenda Luiz', 'patrocínio - MG', 400),
+('Fazenda Letreiro', 'Uberlândia - MG', 450),
+('Fazenda Boa Vista', 'Goiania - GO', 600),
+('Fazenda talismã', 'Jussara - GO', 800),
+('Fazenda Terra Prometida', 'Palmas - TO', 670),
+('Fazenda Embaixador', 'Alta Floresta - MT', 590);
+
+UPDATE Fazenda
+SET nome = 'Fazenda Talismã'
+WHERE id =6;
+
+SELECT *
+FROM Fazenda;
