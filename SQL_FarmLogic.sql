@@ -163,9 +163,67 @@ VALUES
 ('Fazenda Terra Prometida', 'Palmas - TO', 670),
 ('Fazenda Embaixador', 'Alta Floresta - MT', 590);
 
+INSERT INTO Talhao (id_fazenda, nome, area, tipo_solo)
+VALUES
+(2, 'Talhão Sul', 150.00, 'Latossolo Vermelho-Amarelo'),
+(2, 'Talhão Leste', 100.00, 'Latossolo Vermelho-Amarelo'),
+(2, 'Talhão Norte', 100.00, 'Latossolo Vermelho-Amarelo'),
+(2, 'Talhão Oeste', 100.00, 'Latossolo Vermelho-Amarelo'),
+--===========================
+--FAZENDA LUIZ
+(3, 'Talhão Sul', 100.00, 'Latossolo Vermelho-Amarelo'),
+(3, 'Talhão Norte', 50.00, 'Latossolo Vermelho'),
+(3, 'Talhão Nordeste', 50.00, 'Latossolo Vermelho'),
+(3, 'Talhão Central', 70.00, 'Latossolo Vermelho'),
+(3, 'Talhão Leste', 65.00, 'Latossolo Vermelho-Amarelo'),
+(3, 'Talhão Oeste', 65.00, 'Latossolo Vermelho-Amarelo'),
+--===========================
+--FAZENDA LETREIRO
+(4, 'Talhão Norte', 100.00, 'Latossolo Vermelho'),
+(4, 'Talhão leste', 100.00, 'Latossolo Vermelho'),
+(4, 'Talhão Sul', 100.00, 'Latossolo Vermelho-Amarelo'),
+(4, 'Talhão oeste', 100.00, 'Latossolo Vermelho-Amarelo'),
+--===========================
+--FAZENDA BOA VISTA 
+(5, 'Talhão Sul', 100.00, 'Latossolo Vermelho-Amarelo'),
+(5, 'Talhão Suldeste', 150.00, 'Latossolo Vermelho-Amarelo'),
+(5, 'Talhão Norte', 150.00, 'Latossolo Vermelho-Amarelo'),
+(5, 'Talhão Oeste', 100.00, 'Latossolo Vermelho-Amarelo'),
+(5, 'Talhão Central', 100.00, 'Latossolo Vermelho-Amarelo'),
+--===========================
+--FAZENDA TALISMÃ
+(6, 'Talhão Sul', 200.00, 'Latossolo Vermelho'),
+(6, 'Talhão Norte', 200.00, 'Latossolo Vermelho'),
+(6, 'Talhão Leste', 200.00, 'Latossolo Vermelho'),
+(6, 'Talhão Oeste', 200.00, 'Latossolo Vermelho'),
+--===========================
+--FAZENDA TERRA PROMETIDA
+(7, 'Talhão Sul', 150.00, 'Neossolos Quartzarenicos'),
+(7, 'Talhão Norte', 150.00, 'Neossolos Quartzarenicoso'),
+(7, 'Talhão Leste', 150.00, 'Neossolos Quartzarenicos'),
+(7, 'Talhão Oeste', 150.00, 'Neossolos Quartzarenicos'),
+(7, 'Talhão Central', 70.00, 'Neossolos Quartzarenicos'),
+--===========================
+--FAZENDA EMBAIXADOR
+(8, 'Talhão Sul', 150.00, 'Argissolo Vermelho-Amarelo'),
+(8, 'Talhão Norte', 150.00, 'Argissolo Vermelho-Amarelo'),
+(8, 'Talhão Leste', 150.00, 'Argissolo Vermelho-Amarelo'),
+(8, 'Talhão Oeste', 140.00, 'Argissolo Vermelho-Amareloo');
+
+
+--======================
+--SELECT TABLE FAZENDA
+SELECT *
+FROM Fazenda;
+--======================
+--SELECT TABLE TALHÃO
+SELECT *
+FROM Talhao;
+
+
+
+--=====================
+--UPDATE FAZENDA
 UPDATE Fazenda
 SET nome = 'Fazenda Talismã'
 WHERE id =6;
-
-SELECT *
-FROM Fazenda;
