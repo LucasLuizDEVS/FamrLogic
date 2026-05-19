@@ -210,6 +210,17 @@ VALUES
 (8, 'Talhão Leste', 150.00, 'Argissolo Vermelho-Amarelo'),
 (8, 'Talhão Oeste', 140.00, 'Argissolo Vermelho-Amareloo');
 
+--=======================
+--INSERT CULTURA
+INSERT INTO Cultura (id_fazenda, nome, ciclo_dias, produtividade_media)
+VALUES
+(2, 'Café', 210, 5.80),
+(3, 'Café', 200, 5.50),
+(4, 'Soja', 120, 3.50),
+(5, 'Milho', 90, 4.90),
+(6, 'Soja', 120, 3.60),
+(7, 'Soja', 120, 3.50),
+(8, 'Soja', 120, 3.70);
 
 --======================
 --SELECT TABLE FAZENDA
@@ -219,7 +230,6 @@ FROM Fazenda;
 --SELECT TABLE TALHÃO
 SELECT *
 FROM Talhao;
-
 
 
 --=====================
