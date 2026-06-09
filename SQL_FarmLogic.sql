@@ -246,6 +246,19 @@ VALUES
 (7, '2024-06-30', 0.82, 68.00, 23.00, 'Baixo'),
 (8, '2024-07-01', 0.77, 63.00, 26.50, 'Médio');
 
+--INSERT TABELA COLHEITA REAL
+INSERT INTO Colheita_real
+(Id_plantio, data_colheita, quantidade_real, qualidade_graos)
+VALUES
+(1, '2024-08-12', 5.60, 'Alta'),
+(2, '2024-08-18', 5.30, 'Alta'),
+(3, '2024-09-30', 5.10, 'Média'),
+(4, '2024-06-10', 3.45, 'Boa'),
+(5, '2024-05-15', 4.75, 'Excelente'),
+(6, '2024-06-20', 3.55, 'Boa'),
+(7, '2024-06-30', 3.40, 'Excelente'),
+(8, '2024-07-01', 3.60, 'Boa');
+
 --======================
 --SELECT TABLE FAZENDA
 SELECT *
@@ -270,10 +283,14 @@ SET nome = 'Fazenda Talismã'
 WHERE id =6;
 
 --JOIN
-SELECT c.nome, com.quantidade
-FROM colheita col
-JOIN plantio p ON col.id_plantio = p.id
-JOIN cultura c ON p.id_cultura = c.id;
+SELECT
+    c.nome AS Cultura,
+    col.quantidade_real
+FROM Colheita_real col
+INNER JOIN Plantio p
+    ON col.Id_plantio = p.id
+INNER JOIN Cultura c
+    ON p.Id_cultura = c.id;
 
 --GROUP BY
 SELECT id_cultura, COUNT(*)
@@ -282,7 +299,7 @@ GROUP BY id_cultura;
 
 --BETWEEN
 SELECT * FROM plantio
-WHERE data_plantio BETEWEEN '2024-01-01' AND '2024-02-29';
+WHERE data_plantio BETWEEN '2024-01-01' AND '2024-02-29';
 
 --LIKE
 
@@ -292,7 +309,9 @@ SELECT * FROM cultura WHERE nome LIKE '%so%';
 SELECT * FROM talhao WHERE area > 5 AND area < 200;
 
 --IS NULL
-SELECT * FROM colheita WHERE quantidade IS NOT NULL;
+SELECT *
+FROM Colheita_real
+WHERE quantidade_real IS NOT NULL;
 
 --JOINS
 SELECT p.id, c.nome, t.nome
@@ -302,10 +321,22 @@ INNER JOIN talhao t ON p.id_talhao=t.id
 
 
 --UNION
-SELECT nome FROM cultura
-UNION
-SELECT nome FROM defensivo;
+SELECT
+    Nome,
+    Tipo,
+    COUNT(*) AS QTD
+FROM
+(
+    SELECT nome, 'CULTURA' AS Tipo
+    FROM Cultura
 
+    UNION
+
+    SELECT nome, 'DEFENSIVOS' AS Tipo
+    FROM Defensivos
+) AS Dados
+
+GROUP BY Nome, Tipo;
 --GROUP BY + COUNT
 SELECT id_cultura, COUNT(*)
 FROM plantio
@@ -315,7 +346,7 @@ GROUP BY id_cultura;
 SELECT id_cultura, COUNT(*)
 FROM plantio
 GROUP BY id_cultura
-HAVUNG COUNT(*) > 1;
+HAVING COUNT(*) > 1;
 
 --BETWEEN
 SELECT * FROM plantio
@@ -334,11 +365,23 @@ WHERE NOT EXISTS (
 );
 
 --VIEW
+GO
+
 CREATE VIEW vw_colheita AS
-SELECT c.nome, col.quantidade
-FROM colheita col
-JOIN plantio p ON col.id_plantio = p.id
-JOIN cultura c ON p.id_cultura = c.id;
+
+SELECT
+    c.nome AS Cultura,
+    col.quantidade_real
+
+FROM Colheita_real col
+
+INNER JOIN Plantio p
+ON col.Id_plantio = p.id
+
+INNER JOIN Cultura c
+ON p.Id_cultura = c.id;
+
+GO
 -- ==========================================
 -- DELETE
 -- ==========================================
@@ -397,13 +440,14 @@ WHERE nome NOT IN ('Soja');
 -- ==========================================
 -- UNION ALL
 -- ==========================================
-SELECT nome
-FROM Cultura
+SELECT NOME, TIPO, COUNT(*) AS QTD FROM(
+SELECT nome, 'CULTURA' AS TIPO FROM Cultura
 
 UNION ALL
 
-SELECT nome
-FROM Defensivos;
+SELECT nome, 'DEFENSIVOS' AS TIPO FROM Defensivos
+)
+GROUP BY NOME, TIPO;
 
 -- ==========================================
 -- EXCEPT
@@ -482,15 +526,16 @@ FROM Cultura;
 -- ==========================================
 -- VIEW NOVA
 -- ==========================================
+GO
+
 CREATE VIEW vw_Plantios AS
 
 SELECT
-
-p.id,
-c.nome AS Cultura,
-t.nome AS Talhao,
-p.data_plantio,
-p.estimativa_colheita
+    p.id,
+    c.nome AS Cultura,
+    t.nome AS Talhao,
+    p.data_plantio,
+    p.estimativa_colheita
 
 FROM Plantio p
 
@@ -499,6 +544,8 @@ ON p.Id_cultura = c.id
 
 INNER JOIN Talhao t
 ON p.Id_talhao = t.id;
+
+GO
 
 -- ==========================================
 -- CONSULTA DA VIEW
