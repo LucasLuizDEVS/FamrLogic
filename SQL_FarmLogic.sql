@@ -23,7 +23,6 @@ CREATE TABLE Talhao(
     nome VARCHAR(50) NOT NULL,
     area DECIMAL(10,2),
     tipo_solo VARCHAR(50),
-
     FOREIGN KEY (id_fazenda) REFERENCES Fazenda(Id)
 );
 
@@ -34,7 +33,9 @@ CREATE TABLE Cultura(
     id INT PRIMARY KEY IDENTITY(1,1),
     nome VARCHAR(50) NOT NULL,
     ciclo_dias INT,
-    produtividade_media DECIMAL(10,2)
+    produtividade_media DECIMAL(10,2),
+    id_fazenda INT,
+    FOREIGN KEY (id_fazenda) REFERENCES Fazenda(Id)
 );
 
 -- ==========================
@@ -46,7 +47,6 @@ CREATE TABLE Plantio(
     Id_talhao INT,
     Id_cultura INT,
     estimativa_colheita DATE,
-
     FOREIGN KEY (Id_talhao) REFERENCES Talhao(id),
     FOREIGN KEY (Id_cultura) REFERENCES Cultura(id)
 );
@@ -222,6 +222,30 @@ VALUES
 (7, 'Soja', 120, 3.50),
 (8, 'Soja', 120, 3.70);
 
+--INSERT PLANTIO
+INSERT INTO Plantio (data_plantio, Id_talhao, Id_cultura, estimativa_colheita)
+VALUES
+('2024-01-15', 1, 1, '2024-08-12'),
+('2024-01-20', 2, 1, '2024-08-18'),
+('2024-02-01', 3, 2, '2024-09-30'),
+('2024-02-10', 4, 3, '2024-06-10'),
+('2024-02-15', 5, 4, '2024-05-15'),
+('2024-02-20', 6, 5, '2024-06-20'),
+('2024-02-25', 7, 6, '2024-06-30'),
+('2024-03-01', 8, 7, '2024-07-01');
+
+--INSERT MONITORAMENTO SATÉLITE
+INSERT INTO Monitoramento_satelite (Id_talhao, data_colheita, indice_ndvi, umidade, temperatura, risco_climatico)
+VALUES
+(1, '2024-08-12', 0.75, 60.00, 25.00, 'Baixo'),
+(2, '2024-08-18', 0.70, 58.00, 26.00, 'Médio'),
+(3, '2024-09-30', 0.80, 65.00, 24.00, 'Baixo'),
+(4, '2024-06-10', 0.65, 55.00, 28.00, 'Alto'),
+(5, '2024-05-15', 0.60, 50.00, 30.00, 'Alto'),
+(6, '2024-06-20', 0.78, 62.00, 27.00, 'Médio'),
+(7, '2024-06-30', 0.82, 68.00, 23.00, 'Baixo'),
+(8, '2024-07-01', 0.77, 63.00, 26.50, 'Médio');
+
 --======================
 --SELECT TABLE FAZENDA
 SELECT *
@@ -231,9 +255,253 @@ FROM Fazenda;
 SELECT *
 FROM Talhao;
 
+--SELECT TABLE CULTURA
+SELECT * FROM Cultura;
 
+--SELECT TABLE PLANTIO
+SELECT * FROM Plantio;
+
+--SELECT TABLE MONITORAMENTO SATÉLITE
+SELECT * FROM Monitoramento_satelite;
 --=====================
 --UPDATE FAZENDA
 UPDATE Fazenda
 SET nome = 'Fazenda Talismã'
 WHERE id =6;
+
+--JOIN
+SELECT c.nome, com.quantidade
+FROM colheita col
+JOIN plantio p ON col.id_plantio = p.id
+JOIN cultura c ON p.id_cultura = c.id;
+
+--GROUP BY
+SELECT id_cultura, COUNT(*)
+FROM Plantio
+GROUP BY id_cultura;
+
+--BETWEEN
+SELECT * FROM plantio
+WHERE data_plantio BETEWEEN '2024-01-01' AND '2024-02-29';
+
+--LIKE
+
+SELECT * FROM cultura WHERE nome LIKE '%so%';
+
+--AND/OR
+SELECT * FROM talhao WHERE area > 5 AND area < 200;
+
+--IS NULL
+SELECT * FROM colheita WHERE quantidade IS NOT NULL;
+
+--JOINS
+SELECT p.id, c.nome, t.nome
+FROM plantio p
+INNER JOIN cultura c ON p.id_cultura= c.id
+INNER JOIN talhao t ON p.id_talhao=t.id
+
+
+--UNION
+SELECT nome FROM cultura
+UNION
+SELECT nome FROM defensivo;
+
+--GROUP BY + COUNT
+SELECT id_cultura, COUNT(*)
+FROM plantio
+GROUP BY id_cultura;
+
+--HAVING
+SELECT id_cultura, COUNT(*)
+FROM plantio
+GROUP BY id_cultura
+HAVUNG COUNT(*) > 1;
+
+--BETWEEN
+SELECT * FROM plantio
+WHERE data_plantio BETWEEN '2024-01-01' AND '2024-12-31';
+
+--EXISTS
+SELECT * FROM cultura c
+WHERE EXISTS(
+SELECT 1 FROM plantio p WHERE p.id_cultura=c.id
+);
+
+--NOT EXISTS
+SELECT * FROM cultura c
+WHERE NOT EXISTS (
+    SELECT 1 FROM plantio p WHERE p.id_cultura = c.id
+);
+
+--VIEW
+CREATE VIEW vw_colheita AS
+SELECT c.nome, col.quantidade
+FROM colheita col
+JOIN plantio p ON col.id_plantio = p.id
+JOIN cultura c ON p.id_cultura = c.id;
+-- ==========================================
+-- DELETE
+-- ==========================================
+DELETE FROM Defensivos
+WHERE Id = 999;
+
+-- ==========================================
+-- SELECT TOP
+-- ==========================================
+SELECT TOP 5 *
+FROM Talhao;
+
+-- ==========================================
+-- OR
+-- ==========================================
+SELECT *
+FROM Talhao
+WHERE area > 150
+OR tipo_solo = 'Latossolo Vermelho';
+
+-- ==========================================
+-- NOT
+-- ==========================================
+SELECT *
+FROM Cultura
+WHERE NOT nome = 'Soja';
+
+-- ==========================================
+-- IS NULL
+-- ==========================================
+SELECT *
+FROM Solo
+WHERE recomendacao IS NULL;
+
+-- ==========================================
+-- IS NOT NULL
+-- ==========================================
+SELECT *
+FROM Solo
+WHERE recomendacao IS NOT NULL;
+
+-- ==========================================
+-- IN
+-- ==========================================
+SELECT *
+FROM Cultura
+WHERE nome IN ('Soja','Milho');
+
+-- ==========================================
+-- NOT IN
+-- ==========================================
+SELECT *
+FROM Cultura
+WHERE nome NOT IN ('Soja');
+
+-- ==========================================
+-- UNION ALL
+-- ==========================================
+SELECT nome
+FROM Cultura
+
+UNION ALL
+
+SELECT nome
+FROM Defensivos;
+
+-- ==========================================
+-- EXCEPT
+-- ==========================================
+SELECT nome
+FROM Cultura
+
+EXCEPT
+
+SELECT nome
+FROM Defensivos;
+
+-- ==========================================
+-- INTERSECT
+-- ==========================================
+SELECT nome
+FROM Cultura
+
+INTERSECT
+
+SELECT nome
+FROM Defensivos;
+
+-- ==========================================
+-- LEFT JOIN
+-- ==========================================
+SELECT
+f.nome AS Fazenda,
+t.nome AS Talhao
+
+FROM Fazenda f
+
+LEFT JOIN Talhao t
+ON f.Id = t.id_fazenda;
+
+-- ==========================================
+-- RIGHT JOIN
+-- ==========================================
+SELECT
+f.nome AS Fazenda,
+t.nome AS Talhao
+
+FROM Fazenda f
+
+RIGHT JOIN Talhao t
+ON f.Id = t.id_fazenda;
+
+-- ==========================================
+-- SUM
+-- ==========================================
+SELECT
+SUM(produtividade_media) AS Soma_Produtividade
+FROM Cultura;
+
+-- ==========================================
+-- AVG
+-- ==========================================
+SELECT
+AVG(produtividade_media) AS Media_Produtividade
+FROM Cultura;
+
+-- ==========================================
+-- MAX
+-- ==========================================
+SELECT
+MAX(produtividade_media) AS Maior_Produtividade
+FROM Cultura;
+
+-- ==========================================
+-- MIN
+-- ==========================================
+SELECT
+MIN(produtividade_media) AS Menor_Produtividade
+FROM Cultura;
+
+-- ==========================================
+-- VIEW NOVA
+-- ==========================================
+CREATE VIEW vw_Plantios AS
+
+SELECT
+
+p.id,
+c.nome AS Cultura,
+t.nome AS Talhao,
+p.data_plantio,
+p.estimativa_colheita
+
+FROM Plantio p
+
+INNER JOIN Cultura c
+ON p.Id_cultura = c.id
+
+INNER JOIN Talhao t
+ON p.Id_talhao = t.id;
+
+-- ==========================================
+-- CONSULTA DA VIEW
+-- ==========================================
+SELECT *
+FROM vw_Plantios;
