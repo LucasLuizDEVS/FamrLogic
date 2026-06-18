@@ -1,7 +1,7 @@
 # 1. IMPORTAÇÃO
 # O Flask é o que faz o servidor rodar. 
 # O 'jsonify' é para transformar os dados do banco em formato JSON (padrão web).
-from flask import Flask, jsonify
+from flask import Flask, jsonify, render_templates
 import pyodbc 
 
 app = Flask(__name__)
@@ -18,8 +18,7 @@ def get_db_connection():
 
 # 3. ROTA (ENDPOINT)
 # O '@app.route' define um endereço no seu sistema.
-# Se alguém acessar 'http://127.0.0.1:5000/fazendas', o código abaixo roda.
-@app.route('/fazendas', methods=['GET'])
+@app.route('/fazendas', methods=['GET']) 
 def listar_fazendas():
     conexao = get_db_connection()
     cursor = conexao.cursor()
@@ -40,4 +39,4 @@ def listar_fazendas():
 # 4. EXECUÇÃO
 # Esse comando faz o servidor iniciar no seu computador
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000,debug=True)
