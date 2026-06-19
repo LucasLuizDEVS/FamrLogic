@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>FarmLogic - Painel</title>
+
+<style>
+    *{ margin:0; padding:0; box-sizing:border-box; font-family: 'Segoe UI', sans-serif; }
+    body{ background:#f4f7fa; padding:40px; }
+    .container{ max-width:1100px; margin:auto; background:#fff; padding:30px; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,0.08); }
+    .header{ display:flex; justify-content:space-between; align-items:center; margin-bottom:30px; }
+    h1{ color:#2d3748; font-size:32px; }
+    .subtitulo{ color:#718096; margin-top:5px; }
+    .btn{ background:#2F855A; color:white; border:none; padding:12px 22px; border-radius:12px; cursor:pointer; font-size:15px; font-weight:600; transition:0.3s; text-decoration: none; }
+    .btn:hover{ background:#276749; transform:translateY(-2px); }
+    table{ width:100%; border-collapse:collapse; overflow:hidden; border-radius:15px; }
+    thead{ background:#2F855A; color:white; }
+    th{ padding:18px; text-align:left; font-size:15px; }
+    td{ padding:18px; color:#4A5568; border-bottom:1px solid #edf2f7; }
+    tbody tr{ transition:0.2s; }
+    tbody tr:hover{ background:#f7fafc; }
+    .badge{ background:#C6F6D5; color:#22543D; padding:6px 12px; border-radius:20px; font-weight:600; }
+    .link-fazenda { color: #2d3748; text-decoration: none; font-weight: bold; }
+    .link-fazenda:hover { color: #2F855A; text-decoration: underline; }
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+    <div class="header">
+       <div class="logo-header" style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+    <div style="width: 30px; height: 30px; background: #2F855A; border-radius: 6px; color: white; display: flex; align-items: center; justify-content: center;">🌱</div>
+    <span style="font-weight: bold; font-size: 20px; color: #2d3748;">FarmLogic</span>
+</div>
+        <a href="/nova-fazenda" class="btn">+ Nova Fazenda</a>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Localização</th>
+                <th>Hectares</th>
+                <th>Proprietário</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for f in fazendas %}
+            <tr>
+                <td>#{{ f.Id }}</td>
+                <td>
+                    <a href="/fazenda/{{ f.Id }}" class="link-fazenda">{{ f.nome }}</a>
+                </td>
+                <td>{{ f.localizacao }}</td>
+                <td>
+                    <span class="badge">{{ f.hectares }} ha</span>
+                </td>
+                <td>{{ f.nome_proprietario if f.nome_proprietario else 'Sem proprietário' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>
