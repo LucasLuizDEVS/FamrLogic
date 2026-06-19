@@ -24,6 +24,32 @@ CREATE TABLE Talhao (
     FOREIGN KEY (Id_fazenda) REFERENCES Fazenda(Id)
 );
 
+CREATE TABLE Proprietario(
+Id INT IDENTITY(1,1) PRIMARY KEY,
+nome nvarchar(255) NOT NULL,
+cpf_cnpj nvarchar(20) UNIQUE NOT NULL,
+email nvarchar(255),
+telefone nvarchar(20),
+foreign key (id_fazenda) References Fazenda(id)
+);
+
+create table Usuario_fazenda(
+Id int identity(1,1) primary key,
+Id_Usuario int not null,
+Id_Fazenda int not null,
+constraint FK_Usuario FOREIGN KEY (Id_Usuario) references Usuario(Id),
+constraint FK_Fazenda foreign key (Id_Fazenda) references Fazenda(Id)
+);
+
+
+CREATE TABLE Usuario(
+Id INT IDENTITY (1,1) PRIMARY KEY,
+Nome NVARCHAR(100) NOT NULL,
+email NVARCHAR(100) UNIQUE NOT NULL,
+senha_hash NVARCHAR(255) NOT NULL,
+perfil NVARCHAR(50) NOT NULL
+);
+
 CREATE TABLE Cultura (
     Id INT IDENTITY(1,1) PRIMARY KEY,
     Id_fazenda INT NOT NULL,
@@ -246,6 +272,52 @@ VALUES
 (7, '2024-06-30', 3.40, 'Excelente'),
 (8, '2024-07-01', 3.60, 'Boa');
 
+INSERT INTO Usuario ( nome, username, senha_hash, perfil)
+VALUES
+('Lucas Luiz', 'Lucas', 'scrypt:32768:8:1$hash_exemplo', 'LucasL');
+
+INSERT INTO Proprietario (nome, cpf_cnpj, email, telefone, Id_fazenda)
+values('Lucas Luiz', '16270394967', 'luscas@gmail.com', '34991987771', '2');
+
+INSERT INTO Usuario_Fazenda (Id_Usuario, Id_Fazenda) 
+VALUES (2, 3);
+
+select * from Proprietario;
+select * from Usuario;
+
+SELECT * FROM Fazenda WHERE Id = 3;
+
+alter table Fazenda drop constraint FK_Fazenda_Proprietario;
+alter table Proprietario add constraint PK_proprietario primary key (Id);
+ALTER TABLE Fazenda
+ADD Id_proprietario int;
+
+ALTER TABLE Fazenda DROP CONSTRAINT IF EXISTS FK_Fazenda_Proprietario;
+
+ALTER TABLE Fazenda 
+ADD CONSTRAINT FK_Fazenda_Proprietario 
+FOREIGN KEY (Id_proprietario) REFERENCES Proprietario(Id);
+
+SELECT F.nome AS Fazenda, P.nome AS Proprietario
+FROM Fazenda F
+LEFT JOIN Proprietario P ON F.Id_proprietario = P.Id;
+
+alter table Proprietario
+ADD Id_fazenda int;
+
+ALTER TABLE Fazenda
+ADD CONSTRAINT FK_Fazenda_Proprietario
+FOREIGN KEY (Id_proprietario)
+REFERENCES Proprietario(Id)
+
+alter table usuario
+drop column email;
+ALTER TABLE Usuario DROP CONSTRAINT UQ__Usuario__AB6E61647E9DAC63;
+alter table usuario add username NVARCHAR(100) NOT NULL;
+alter table usuario add constraint UQ_Usuario_Username Unique (username);
+
+DELETE FROM Usuario;
+
 UPDATE Cultura
 SET produtividade_media = 3.80
 WHERE Id = 3;
@@ -440,3 +512,16 @@ FROM vw_colheita;
 
 SELECT *
 FROM vw_Plantios;
+
+SELECT * FROM Fazenda f
+LEFT JOIN talhao t ON f.id = t.Id_fazenda
+LEFT JOIN cultura c ON f.id = c.Id_fazenda
+LEFT JOIN Plantio p ON p.Id_talhao = t.Id AND p.Id_cultura = c.Id
+LEFT JOIN Aplicacao_defensivos ad ON ad.Id_plantio = p.Id
+LEFT JOIN Defensivos d ON d.Id = ad.Id_defensivos
+LEFT JOIN Estimativa_colheita ec ON ec.Id_plantio = p.Id
+LEFT JOIN Colheita_real cr ON cr.Id_plantio = p.Id
+LEFT JOIN Solo s ON s.Id_talhao = t.Id
+LEFT JOIN Monitoramento_satelite ms ON ms.Id_talhao = t.Id
+LEFT JOIN Previsao_tempo pr ON pr.Id_talhao = t.Id
+WHERE f.nome = 'Fazenda Letreiro';
